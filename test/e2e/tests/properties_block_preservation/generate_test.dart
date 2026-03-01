@@ -1,0 +1,15 @@
+﻿import 'package:openapi_gen/openapi_gen.dart';
+
+Future<void> main() async {
+  final config = SWPConfig(
+    outputDirectory:
+        'test/e2e/tests/properties_block_preservation/generated_files',
+    schemaPath: 'test/e2e/tests/properties_block_preservation/openapi.yaml',
+    jsonSerializer: JsonSerializer.freezed,
+    putClientsInFolder: true,
+  );
+
+  final processor = GenProcessor(config);
+  await processor.generateFiles();
+  print('Files generated successfully!');
+}

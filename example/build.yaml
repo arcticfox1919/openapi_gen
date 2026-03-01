@@ -1,0 +1,9 @@
+global_options:
+  freezed:
+    runs_before:
+      - json_serializable
+  dart_mappable_builder:
+    options:
+      renameMethods:
+        toJson: toJsonString
+        toMap: toJson

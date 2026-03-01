@@ -1,0 +1,137 @@
+﻿import 'package:openapi_gen/src/generator/model/field_parser.dart';
+import 'package:openapi_gen/src/generator/model/http_client.dart';
+import 'package:openapi_gen/src/generator/model/json_serializer.dart';
+import 'package:openapi_gen/src/generator/model/programming_language.dart';
+import 'package:openapi_gen/src/parser/model/replacement_rule.dart';
+
+/// The configuration that the Generator uses
+class GeneratorConfig {
+  /// Creates a  [GeneratorConfig].
+  const GeneratorConfig({
+    required this.name,
+    required this.outputDirectory,
+    this.language = ProgrammingLanguage.dart,
+    this.jsonSerializer = JsonSerializer.jsonSerializable,
+    this.httpClient = HttpClient.gio,
+    this.defaultContentType = 'application/json',
+    this.rootClient = true,
+    this.rootClientName = 'RestClient',
+    this.clientPostfix,
+    this.exportFile = true,
+    this.putClientsInFolder = false,
+    this.enumsToJson = false,
+    this.unknownEnumValue = true,
+    this.markFilesAsGenerated = false,
+    this.replacementRules = const [],
+    this.generateValidator = false,
+    this.useFreezed3 = false,
+    this.useMultipartFile = false,
+    this.fallbackUnion,
+    this.dartMappableConvenientWhen = true,
+    this.mergeOutputs = false,
+    this.includeIfNull = false,
+    this.useFlutterCompute = false,
+    this.generateUrlsConstants = false,
+    this.fieldParsers = const [],
+  });
+
+  /// Optional. Set API name for folder and export file or merged output file
+  /// If not specified, the file name is used.
+  final String name;
+
+  /// Required. Sets output directory for generated files (Clients and DTOs).
+  final String outputDirectory;
+
+  /// Optional. Sets the programming language (currently only dart is supported).
+  final ProgrammingLanguage language;
+
+  /// DART ONLY
+  /// Optional. Current available serializers are: json_serializable, freezed, dart_mappable.
+  final JsonSerializer jsonSerializer;
+
+  /// DART ONLY
+  /// Optional. Selects the HTTP client package used for generated REST clients.
+  /// Defaults to [HttpClient.gio].
+  final HttpClient httpClient;
+
+  /// Optional. Set postfix for client classes and files.
+  final String? clientPostfix;
+
+  /// DART ONLY
+  /// Optional. Set 'true' to generate root client
+  /// with interface and all clients instances.
+  final bool rootClient;
+
+  /// DART ONLY
+  /// Optional. Set root client name.
+  final String? rootClientName;
+
+  /// DART ONLY
+  /// Optional. Set `true` to generate export file.
+  final bool exportFile;
+
+  /// Optional. Set `true` to put all clients in clients folder.
+  final bool putClientsInFolder;
+
+  /// DART ONLY
+  /// Optional. Set `true` to include toJson() in enums.
+  /// If set to `false`, serialization will use .name instead.
+  final bool enumsToJson;
+
+  /// DART ONLY
+  /// Optional. Set `true` to maintain backwards compatibility when adding new values on the backend.
+  final bool unknownEnumValue;
+
+  /// Optional. Set `false` to not put a comment at the beginning of the generated files.
+  final bool markFilesAsGenerated;
+
+  /// Default content type for all requests and responses.
+  final String defaultContentType;
+
+  /// Optional. Set regex replacement rules for the names of the generated classes/enums.
+  /// All rules are applied in order.
+  final List<ReplacementRule> replacementRules;
+
+  /// Optional. Set `true` to generate validator function and prams for freezed.
+  final bool generateValidator;
+
+  /// Optional. Set `true` to use freezed v3 if jsonSerializer is freezed.
+  final bool useFreezed3;
+
+  /// DART ONLY
+  /// Optional. Set `true` to use MultipartFile instead of File as argument type
+  /// for file parameters.
+  final bool useMultipartFile;
+
+  /// DART ONLY
+  /// Optional. Set fallback constructor name to use fallbackUnion parameter when using Freezed annotation.
+  final String? fallbackUnion;
+
+  /// DART ONLY
+  /// Optional. Set 'true' to generate when/maybeWhen convenience methods for dart_mappable unions.
+  /// Set 'false' to use only native Dart pattern matching.
+  final bool dartMappableConvenientWhen;
+
+  /// Optional. Set to true to merge all generated code into a single file.
+  ///
+  /// This is useful when using openapi_gen together with build_runner, which needs to map
+  /// input files to output files 1-to-1.
+  final bool mergeOutputs;
+
+  /// DART ONLY
+  /// Optional. Set `true` to generate includeIfNull annotations for nullable fields.
+  /// If set to `false`, includeIfNull annotations will not be generated.
+  final bool includeIfNull;
+
+  /// DART/FLUTTER ONLY
+  /// Optional. Set `true` to generate top-level serialize/deserialize functions
+  /// for Flutter isolate-based multithreading (Flutter compute support).
+  final bool useFlutterCompute;
+
+  /// DART/FLUTTER ONLY
+  /// Optional. Set `true` to generate URL constants for all endpoints.
+  final bool generateUrlsConstants;
+
+  /// {@macro field_parsers}
+  final List<FieldParser> fieldParsers;
+}

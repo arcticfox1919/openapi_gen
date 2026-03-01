@@ -17,8 +17,7 @@ const _openApiPrimitives = {
   'file',
 };
 
-bool _isPrimitive(String openApiType) =>
-    _openApiPrimitives.contains(openApiType.toLowerCase());
+bool _isPrimitive(String openApiType) => _openApiPrimitives.contains(openApiType.toLowerCase());
 
 /// Generates a Dart gio-style REST client.
 ///
@@ -54,9 +53,7 @@ String dartGioClientTemplate({
   required bool generateUrlsConstants,
   String? fileName,
 }) {
-  final parameterTypes = restClient.requests
-      .expand((r) => r.parameters.map((p) => p.type))
-      .toSet();
+  final parameterTypes = restClient.requests.expand((r) => r.parameters.map((p) => p.type)).toSet();
   final needsConvert = restClient.requests.any((r) => r.returnType != null);
   final sb = StringBuffer();
 
@@ -74,8 +71,7 @@ String dartGioClientTemplate({
 
   sb.writeln("import 'package:gio/gio.dart';");
 
-  final modelImports =
-      dartImports(imports: restClient.imports, pathPrefix: '../models/');
+  final modelImports = dartImports(imports: restClient.imports, pathPrefix: '../models/');
   if (modelImports.isNotEmpty) {
     sb.write(modelImports);
   }
@@ -106,8 +102,7 @@ class $name {
 
   if (generateUrlsConstants) {
     final constants = restClient.requests
-        .map((r) =>
-            "  /// `${r.route}`\n  static const ${r.name.toCamel} = '${r.route}';")
+        .map((r) => "  /// `${r.route}`\n  static const ${r.name.toCamel} = '${r.route}';")
         .join('\n');
     sb.write('''
 
@@ -142,17 +137,13 @@ String _buildMethod(
   }
 
   // Classify parameters.
-  final pathParams = request.parameters
-      .where((p) => p.parameterType == HttpParameterType.path)
-      .toList();
-  final queryParams = request.parameters
-      .where((p) => p.parameterType == HttpParameterType.query)
-      .toList();
-  final headerParams = request.parameters
-      .where((p) => p.parameterType == HttpParameterType.header)
-      .toList();
-  final bodyParams =
-      request.parameters.where((p) => p.parameterType.isBody).toList();
+  final pathParams =
+      request.parameters.where((p) => p.parameterType == HttpParameterType.path).toList();
+  final queryParams =
+      request.parameters.where((p) => p.parameterType == HttpParameterType.query).toList();
+  final headerParams =
+      request.parameters.where((p) => p.parameterType == HttpParameterType.header).toList();
+  final bodyParams = request.parameters.where((p) => p.parameterType.isBody).toList();
 
   // Return type.
   final returnDart = request.returnType == null
@@ -168,11 +159,9 @@ String _buildMethod(
   if (params.isEmpty) {
     sb.writeln('  Future<$returnDart> ${request.name}() async {');
   } else {
-    final paramStr = params
-        .map((p) => _paramDeclaration(p, useMultipartFile: useMultipartFile))
-        .join();
-    sb.writeln(
-        '  Future<$returnDart> ${request.name}({$paramStr\n  }) async {');
+    final paramStr =
+        params.map((p) => _paramDeclaration(p, useMultipartFile: useMultipartFile)).join();
+    sb.writeln('  Future<$returnDart> ${request.name}({$paramStr\n  }) async {');
   }
 
   // URL with path parameter substitution.
@@ -182,10 +171,10 @@ String _buildMethod(
   }
 
   final method = request.requestType.name.toLowerCase();
-  final callPrefix = returnsVoid
-      ? '    await _gio.$method('
-      : '    final response = await _gio.$method(';
-  sb.writeln("$callPrefix      '\${_baseUrl ?? ''}$route',");
+  final callPrefix =
+      returnsVoid ? '    await _gio.$method(' : '    final response = await _gio.$method(';
+  sb.writeln(callPrefix);
+  sb.writeln("      '\${_baseUrl ?? ''}$route',");
 
   // Body.
   if (bodyParams.isNotEmpty) {
@@ -196,9 +185,7 @@ String _buildMethod(
     );
     final bVarName = _dartName(b);
     final isPrim = _isPrimitive(b.type.type) || bDart.startsWith('Map<');
-    sb.writeln(isPrim
-        ? '      jsonBody: $bVarName,'
-        : '      jsonBody: $bVarName.toJson(),');
+    sb.writeln(isPrim ? '      jsonBody: $bVarName,' : '      jsonBody: $bVarName.toJson(),');
   }
 
   // Headers.
@@ -227,8 +214,7 @@ String _buildMethod(
 
   // Return / decode.
   if (!returnsVoid) {
-    sb.writeln(
-        '    return ${_decodeResponse(request.returnType!, returnDart)};');
+    sb.writeln('    return ${_decodeResponse(request.returnType!, returnDart)};');
   }
 
   sb.writeln('  }');
@@ -247,19 +233,16 @@ String _paramDeclaration(
   final varName = _dartName(p);
   final isRequired = p.type.isRequired && p.type.defaultValue == null;
   final requiredKeyword = isRequired ? 'required ' : '';
-  final defaultVal = !p.type.isRequired && p.type.defaultValue != null
-      ? ' = ${p.type.defaultValue}'
-      : '';
-  final deprecatedNote = p.deprecated
-      ? '\n    // ignore: deprecated_member_use_from_same_package\n'
-      : '';
+  final defaultVal =
+      !p.type.isRequired && p.type.defaultValue != null ? ' = ${p.type.defaultValue}' : '';
+  final deprecatedNote =
+      p.deprecated ? '\n    // ignore: deprecated_member_use_from_same_package\n' : '';
   return '$deprecatedNote\n    $requiredKeyword$dartType $varName$defaultVal,';
 }
 
 /// Derives a safe Dart camelCase identifier from the parameter name,
 /// falling back to `body` for anonymous body params.
-String _dartName(UniversalRequestType parameter) =>
-    (parameter.type.name ?? 'body').toCamel;
+String _dartName(UniversalRequestType parameter) => (parameter.type.name ?? 'body').toCamel;
 
 /// Generates the expression that decodes `response.body` into [dartType].
 String _decodeResponse(UniversalType returnType, String dartType) {
@@ -317,7 +300,5 @@ String _singleItemDartType(UniversalType t) {
     nullable: t.nullable,
     enumType: t.enumType,
   );
-  return raw
-      .toSuitableType(ProgrammingLanguage.dart, useMultipartFile: false)
-      .replaceAll('?', '');
+  return raw.toSuitableType(ProgrammingLanguage.dart, useMultipartFile: false).replaceAll('?', '');
 }

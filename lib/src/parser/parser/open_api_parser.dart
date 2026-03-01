@@ -889,6 +889,23 @@ class OpenApiParser {
             // typeDef is always non-nullable
             isRequired: true,
           );
+          // Skip typedef generation when the resolved type is a Dart built-in
+          // primitive and requires no import. This prevents a schema like
+          // `String: { type: string }` from generating `typedef String = String`,
+          // which would shadow Dart's built-in String type and break compilation.
+          const dartBuiltinTypes = {
+            'String',
+            'int',
+            'double',
+            'num',
+            'bool',
+            'dynamic',
+            'Object',
+          };
+          if (typeWithImport.import == null &&
+              dartBuiltinTypes.contains(typeWithImport.type.type)) {
+            return;
+          }
           parameters.add(typeWithImport.type);
           if (typeWithImport.import != null) {
             imports.add(typeWithImport.import!);

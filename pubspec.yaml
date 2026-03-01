@@ -1,6 +1,6 @@
 ﻿name: openapi_gen
 description: Generates Dart REST clients and data classes from OpenAPI (v2/v3) schemas — no copy-paste required.
-version: 1.0.0
+version: 1.1.0
 repository: https://github.com/arcticfox1919/openapi_gen
 topics:
   - openapi
